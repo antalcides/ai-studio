@@ -1,0 +1,73 @@
+{
+  "name": "ai-studio",
+  "version": "1.0.0",
+  "description": "AI Studio - Aplicación web para chatear con IA local y en la nube",
+  "main": "../electron/main.js",
+  "scripts": {
+    "start": "npx serve . -p 8000",
+    "dev": "npx serve . -p 8000 --live",
+    "electron": "electron ../electron",
+    "electron-dev": "electron ../electron --dev",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-win-simple": "node ../tools/build-win.js",
+    "package-win": "node ../tools/package-win.js",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "ollama",
+    "openai",
+    "anthropic",
+    "gemini",
+    "ai",
+    "chat",
+    "electron",
+    "desktop"
+  ],
+  "author": "AI Studio",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.4",
+    "serve": "^14.2.1"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "electron-store": "^8.1.0"
+  },
+  "build": {
+    "appId": "com.aistudio.desktop",
+    "productName": "AI Studio",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*",
+      "!dist/**/*",
+      "!build/**/*"
+    ],
+    "win": {
+      "target": "dir",
+      "icon": "public/assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/assets/icon.png"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romeroalan26/ollama-gui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/romeroalan26/ollama-gui/issues"
+  },
+  "homepage": "https://github.com/romeroalan26/ollama-gui"
+}

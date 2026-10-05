@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- jsPDF para exportación PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fas fa-robot"></i>
+            <span>AI Studio</span>
+          </div>
+          <button id="newChatBtn" class="new-chat-btn">
+            <i class="fas fa-plus"></i>
+            Nuevo Chat
+          </button>
+        </div>
+
+        <div class="provider-selector">
+          <label for="providerBtn">Proveedor / Agente:</label>
+          <button
+            type="button"
+            id="providerBtn"
+            class="provider-btn"
+            title="Seleccionar proveedor o agente para modelos locales o en la nube"
+          >
+            <i class="fas fa-cloud provider-btn-icon" id="providerBtnIcon"></i>
+            <span id="providerBtnLabel">Ollama</span>
+            <i class="fas fa-chevron-right provider-btn-arrow"></i>
+          </button>
+        </div>
+
+        <div class="model-selector">
+          <label for="modelSelect">Modelo:</label>
+          <div class="model-search-container">
+            <input
+              type="text"
+              id="modelSearch"
+              placeholder="Buscar modelo..."
+              class="model-search"
+            />
+            <i class="fas fa-search search-icon"></i>
+            <button
+              type="button"
+              id="refreshModelsBtn"
+              class="refresh-models-btn"
+              title="Actualizar la lista de modelos del proveedor activo"
+            >
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+          <select id="modelSelect">
+            <option value="">Cargando modelos instalados...</option>
+          </select>
+        </div>
+
+        <!-- Gestión de chats -->
+        <div class="chats-section">
+          <div class="chats-toolbar">
+            <div class="chats-section-title">Mis chats</div>
+            <div class="chat-search-container">
+              <input
+                type="text"
+                id="chatSearch"
+                placeholder="Buscar chats..."
+                class="chat-search"
+              />
+              <i class="fas fa-search chat-search-icon"></i>
+            </div>
+            <div class="chat-filters" role="tablist">
+              <button type="button" class="chat-filter active" data-filter="active" title="Chats activos">
+                <i class="fas fa-comments"></i>
+              </button>
+              <button type="button" class="chat-filter" data-filter="favorites" title="Favoritos">
+                <i class="fas fa-star"></i>
+              </button>
+              <button type="button" class="chat-filter" data-filter="archived" title="Archivados">
+                <i class="fas fa-archive"></i>
+              </button>
+              <button type="button" class="chat-filter" data-filter="trash" title="Papelera">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="chats-list" id="chatsList">
+            <!-- Se rellena dinámicamente -->
+          </div>
+          <div class="chats-bulk-actions" id="chatsBulkActions" hidden>
+            <button type="button" id="bulkExportPdfBtn" class="bulk-btn" title="Exportar seleccionados a PDF">
+              <i class="fas fa-file-pdf"></i>
+            </button>
+            <button type="button" id="bulkArchiveBtn" class="bulk-btn" title="Archivar seleccionados">
+              <i class="fas fa-archive"></i>
+            </button>
+            <button type="button" id="bulkDeleteBtn" class="bulk-btn" title="Mover a papelera">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button type="button" id="bulkClearSelectionBtn" class="bulk-btn" title="Quitar selección">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button
+            id="providersBtn"
+            class="sidebar-btn"
+            title="Elegir proveedor/Agente de IA y configurar modelos en la nube o locales"
+          >
+            <i class="fas fa-cloud"></i>
+            Proveedores
+          </button>
+          <button
+            id="settingsBtn"
+            class="sidebar-btn"
+            title="Configurar modelo, tema y otras opciones"
+          >
+            <i class="fas fa-cog"></i>
+            Configuración
+          </button>
+          <button
+            id="exportBtn"
+            class="sidebar-btn"
+            title="Descargar la conversación actual como archivo JSON"
+          >
+            <i class="fas fa-download"></i>
+            Exportar JSON
+          </button>
+          <button
+            id="exportMdBtn"
+            class="sidebar-btn"
+            title="Descargar la conversación actual como archivo Markdown (.md)"
+          >
+            <i class="fas fa-file-alt"></i>
+            Exportar Markdown
+          </button>
+          <button
+            id="exportPdfBtn"
+            class="sidebar-btn"
+            title="Exportar la conversación actual a PDF"
+          >
+            <i class="fas fa-file-pdf"></i>
+            Exportar PDF
+          </button>
+          <button
+            id="clearBtn"
+            class="sidebar-btn"
+            title="Vaciar mensajes del chat actual (sin borrar el guardado)"
+          >
+            <i class="fas fa-eraser"></i>
+            Limpiar vista
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <main class="main-content">
+        <header class="chat-header">
+          <div class="chat-info">
+            <h1 id="chatTitleDisplay">Chat con AI Studio</h1>
+            <div class="model-status">
+              <button
+                id="providerChip"
+                class="provider-chip"
+                title="Cambiar de proveedor / agente"
+              >
+                <i class="fas fa-cloud" id="providerChipIcon"></i>
+                <span id="currentProvider">Ollama</span>
+              </button>
+              <span class="status-dot"></span>
+              <span id="currentModel">llama3:8b</span>
+              <button
+                id="checkModelBtn"
+                class="check-model-btn"
+                title="Verificar estado del modelo"
+              >
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button id="toggleSidebarBtn" class="header-btn" title="Mostrar/ocultar barra lateral">
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </header>
+
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+              <div class="welcome-icon">
+                <i class="fas fa-robot"></i>
+              </div>
+              <h2>¡Hola! Soy tu asistente de AI Studio</h2>
+              <p>Estoy aquí para ayudarte. ¿En qué puedo asistirte hoy?</p>
+              <div class="suggestions">
+                <button
+                  class="suggestion-btn"
+                  title="Haz clic para usar esta sugerencia como mensaje inicial"
+                >
+                  Explícame un concepto
+                </button>
+                <button
+                  class="suggestion-btn"
+                  title="Haz clic para usar esta sugerencia como mensaje inicial"
+                >
+                  Ayúdame con código
+                </button>
+                <button
+                  class="suggestion-btn"
+                  title="Haz clic para usar esta sugerencia como mensaje inicial"
+                >
+                  Escribe un texto
+                </button>
+                <button
+                  class="suggestion-btn"
+                  title="Haz clic para usar esta sugerencia como mensaje inicial"
+                >
+                  Resuelve un problema
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <div id="attachmentsPreview" class="attachments-preview" hidden></div>
+            <div class="input-container">
+              <button
+                type="button"
+                id="attachFileBtn"
+                class="attach-button"
+                title="Adjuntar archivo o imagen (texto, código, PDF, imágenes para modelos vision)"
+              >
+                <i class="fas fa-paperclip"></i>
+              </button>
+              <input
+                type="file"
+                id="fileInput"
+                multiple
+                accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css,.xml,.yml,.yaml,.toml,.ini,.log,.sh,.sql,.java,.c,.cpp,.h,.go,.rs,.rb,.php,.pdf,image/*"
+                hidden
+              />
+              <textarea
+                id="messageInput"
+                placeholder="Escribe tu mensaje aquí... (Enter para enviar, Shift+Enter para nueva línea)"
+                rows="1"
+              ></textarea>
+              <button id="sendButton" class="send-button" title="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+            <div class="input-footer">
+              <span id="status" class="status"></span>
+              <span class="input-hint" id="inputHint">Ollama local · puedes adjuntar texto, código, PDF e imágenes</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal de configuración -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Configuración</h2>
+          <button id="closeSettingsBtn" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label for="apiUrl">URL de la API de Ollama:</label>
+            <input
+              type="text"
+              id="apiUrl"
+              value="http://localhost:11434"
+              placeholder="http://localhost:11434"
+            />
+            <small>Por defecto Ollama escucha en el puerto 11434.</small>
+          </div>
+          <div class="setting-group">
+            <label for="modalModelSelect">Modelo:</label>
+            <div class="model-search-container">
+              <input
+                type="text"
+                id="modalModelSearch"
+                placeholder="Buscar modelo..."
+                class="model-search"
+              />
+              <i class="fas fa-search search-icon"></i>
+              <button
+                type="button"
+                id="refreshModalModelsBtn"
+                class="refresh-models-btn"
+                title="Actualizar la lista de modelos del proveedor activo"
+              >
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+            <select id="modalModelSelect">
+              <option value="">Cargando modelos instalados...</option>
+            </select>
+            <small
+              >Selecciona el modelo que quieres usar. Usa el buscador o el botón 🔄 después de un
+              <code>ollama pull nombre-del-modelo</code></small
+            >
+          </div>
+          <div class="setting-group">
+            <label for="themeSelect">Tema:</label>
+            <select id="themeSelect">
+              <option value="dark" selected>Oscuro</option>
+              <option value="light">Claro</option>
+              <option value="auto">Automático</option>
+            </select>
+            <small>Automático sigue la configuración de tu sistema operativo.</small>
+          </div>
+          <div class="setting-group">
+            <label>
+              <input type="checkbox" id="autoScroll" checked />
+              Auto-scroll en nuevos mensajes
+            </label>
+            <small>Desplaza automáticamente al último mensaje cuando llega una nueva respuesta.</small>
+          </div>
+          <div class="setting-group">
+            <label>
+              <input type="checkbox" id="markdownEnabled" checked />
+              Habilitar Markdown
+            </label>
+            <small>Formatea automáticamente el texto de las respuestas (negrita, cursiva, código).</small>
+          </div>
+          <div class="setting-group" id="shortcutSettingGroup" hidden>
+            <label>Acceso directo</label>
+            <button type="button" id="createShortcutBtn" class="btn-secondary" style="width:100%;margin-top:0.5rem;">
+              <i class="fas fa-external-link-alt"></i>
+              Crear acceso directo en el menú Inicio
+            </button>
+            <small>Solo disponible en la versión de escritorio (Windows).</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="saveSettingsBtn" class="btn-primary">Guardar</button>
+          <button id="cancelSettingsBtn" class="btn-secondary">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de proveedores / agentes -->
+    <div id="providersModal" class="modal">
+      <div class="modal-content modal-lg">
+        <div class="modal-header">
+          <h2><i class="fas fa-cloud"></i> Proveedores / Agentes</h2>
+          <button id="closeProvidersBtn" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body providers-body">
+          <p class="providers-intro">
+            Elige un proveedor para usar modelos en la nube o locales. Configura la clave API,
+            la URL base y los modelos de cada uno.
+          </p>
+          <div class="providers-grid" id="providersGrid"></div>
+          <div class="provider-config" id="providerConfig">
+            <div class="provider-config-header">
+              <h3 id="providerConfigTitle">Configuración</h3>
+              <span id="providerActiveBadge" class="provider-badge" hidden>Activo</span>
+            </div>
+            <div id="providerTestResult" class="provider-test-result" hidden></div>
+            <div class="setting-group">
+              <label for="providerApiKey">Clave API:</label>
+              <div class="api-key-row">
+                <input
+                  type="password"
+                  id="providerApiKey"
+                  placeholder="Pega aquí tu clave API"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button
+                  type="button"
+                  id="toggleApiKeyBtn"
+                  class="icon-btn"
+                  title="Mostrar u ocultar la clave"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <small id="providerApiKeyHint"
+                >Se guarda solo en la configuración local de este equipo.</small
+              >
+            </div>
+            <div class="setting-group">
+              <label for="providerBaseUrl">URL base:</label>
+              <input
+                type="text"
+                id="providerBaseUrl"
+                spellcheck="false"
+                autocomplete="off"
+              />
+              <small id="providerBaseUrlHint">Dirección del endpoint de la API.</small>
+            </div>
+            <div class="setting-group">
+              <label for="providerModels">Modelos (separados por coma):</label>
+              <textarea id="providerModels" rows="3" spellcheck="false"></textarea>
+              <div class="provider-config-actions">
+                <button type="button" id="fetchModelsBtn" class="btn-secondary">
+                  <i class="fas fa-sync-alt"></i> Obtener modelos
+                </button>
+                <button type="button" id="testProviderBtn" class="btn-secondary">
+                  <i class="fas fa-plug"></i> Probar conexión
+                </button>
+              </div>
+              <small id="providerModelsHint"
+                >Escribe los modelos manualmente o usa «Obtener modelos» para cargarlos desde la
+                API.</small
+              >
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="saveProviderBtn" class="btn-primary">
+            <i class="fas fa-check"></i> Guardar y usar
+          </button>
+          <button id="resetProviderBtn" class="btn-secondary">
+            <i class="fas fa-undo"></i> Restablecer
+          </button>
+          <button id="closeProvidersFooterBtn" class="btn-secondary">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal renombrar / etiquetas -->
+    <div id="chatEditModal" class="modal">
+      <div class="modal-content modal-sm">
+        <div class="modal-header">
+          <h2 id="chatEditModalTitle">Editar chat</h2>
+          <button id="closeChatEditBtn" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label for="chatTitleInput">Nombre:</label>
+            <input type="text" id="chatTitleInput" maxlength="120" placeholder="Título del chat" />
+          </div>
+          <div class="setting-group">
+            <label for="chatTagsInput">Etiquetas (separadas por coma):</label>
+            <input type="text" id="chatTagsInput" placeholder="trabajo, código, ideas" />
+            <small>Ejemplo: python, apuntes, importante</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="saveChatEditBtn" class="btn-primary">Guardar</button>
+          <button id="cancelChatEditBtn" class="btn-secondary">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú contextual de chat -->
+    <div id="chatContextMenu" class="context-menu" hidden>
+      <button type="button" data-action="rename"><i class="fas fa-pen"></i> Renombrar / etiquetas</button>
+      <button type="button" data-action="favorite"><i class="fas fa-star"></i> <span class="ctx-fav-label">Favorito</span></button>
+      <button type="button" data-action="archive"><i class="fas fa-archive"></i> <span class="ctx-arch-label">Archivar</span></button>
+      <button type="button" data-action="export-pdf"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+      <button type="button" data-action="export-md"><i class="fas fa-file-alt"></i> Exportar Markdown</button>
+      <button type="button" data-action="export-json"><i class="fas fa-download"></i> Exportar JSON</button>
+      <hr />
+      <button type="button" data-action="restore" class="ctx-restore" hidden><i class="fas fa-undo"></i> Recuperar</button>
+      <button type="button" data-action="delete" class="danger"><i class="fas fa-trash"></i> <span class="ctx-del-label">Mover a papelera</span></button>
+      <button type="button" data-action="delete-forever" class="danger ctx-forever" hidden><i class="fas fa-skull-crossbones"></i> Eliminar permanentemente</button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Procesando...</p>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

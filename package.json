@@ -1,0 +1,128 @@
+{
+  "name": "ai-studio",
+  "version": "1.2.0",
+  "description": "AI Studio - Aplicación de escritorio para chatear con modelos de IA locales y en la nube (OpenAI, Anthropic, Gemini, Ollama, LM Studio, OpenRouter y más)",
+  "main": "electron/main.js",
+  "author": {
+    "name": "AI Studio",
+    "email": "dev@localhost"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/romeroalan26/ollama-gui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romeroalan26/ollama-gui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/romeroalan26/ollama-gui/issues"
+  },
+  "keywords": [
+    "ollama",
+    "openai",
+    "anthropic",
+    "gemini",
+    "openrouter",
+    "ai",
+    "chat",
+    "local",
+    "cloud",
+    "electron",
+    "desktop"
+  ],
+  "scripts": {
+    "start": "npx serve public -p 8000",
+    "dev": "npx serve public -p 8000 --live",
+    "electron": "electron .",
+    "electron-dev": "electron . --dev",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win --x64",
+    "build-win-portable": "electron-builder --win portable --x64",
+    "build-win-dir": "electron-builder --win dir --x64",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "build-win-simple": "node tools/build-win.js",
+    "package-win": "node tools/package-win.js",
+    "postinstall": "electron-builder install-app-deps",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3",
+    "serve": "^14.2.1"
+  },
+  "build": {
+    "appId": "com.aistudio.desktop",
+    "productName": "AI Studio",
+    "executableName": "ai-studio",
+    "copyright": "Copyright © 2026",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/assets/icon.ico",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AI Studio",
+      "runAfterFinish": true,
+      "installerIcon": "public/assets/icon.ico",
+      "uninstallerIcon": "public/assets/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "public/assets/icon.png",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility",
+      "icon": "public/assets/icon.png"
+    }
+  }
+}

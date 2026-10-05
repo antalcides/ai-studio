@@ -1,0 +1,74 @@
+{
+  "name": "chat-ia-local",
+  "version": "1.0.0",
+  "description": "Aplicación web para chatear con IA local usando Ollama",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "npx serve public -p 8000",
+    "dev": "npx serve public -p 8000 --live",
+    "electron": "electron electron/main.js",
+    "electron-dev": "electron electron/main.js --dev",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-win-simple": "node tools/build-win.js",
+    "package-win": "node tools/package-win.js",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "ollama",
+    "ai",
+    "chat",
+    "local",
+    "llama",
+    "mistral",
+    "electron",
+    "desktop"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3",
+    "serve": "^14.2.1"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "electron-store": "^8.1.0"
+  },
+  "build": {
+    "appId": "com.tuapp.chat-ia-local",
+    "productName": "Chat IA Local",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "public/**/*",
+      "electron/**/*",
+      "!node_modules/**/*",
+      "!dist/**/*",
+      "!build/**/*"
+    ],
+    "win": {
+      "target": "dir",
+      "icon": "public/assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/assets/icon.png"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/chat-ia-local.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tu-usuario/chat-ia-local/issues"
+  },
+  "homepage": "https://github.com/tu-usuario/chat-ia-local#readme"
+}
