@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=AI Studio
+Exec=ai-studio %U
+Icon=com.aistudio.desktop
+Comment=Chat with local and cloud AI models
+Categories=Utility;Development;
+Terminal=false
+StartupNotify=true
+StartupWMClass=AI Studio
+X-Flatseal-dbus-strict-interfaces=false
