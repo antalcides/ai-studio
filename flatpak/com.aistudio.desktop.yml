@@ -1,0 +1,37 @@
+app-id: com.aistudio.desktop
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.nodejs18
+
+command: ai-studio
+
+finish-args:
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --share=ipc
+  - --socket=pulseaudio
+  - --filesystem=home
+  - --env=NODE_TLS_REJECT_UNAUTHORIZED=0
+
+modules:
+  - name: ai-studio
+    buildsystem: simple
+    build-commands:
+      - npm install --production
+      - npx electron-builder --linux dir --publish=never
+      - install -Dm755 dist/win-unpacked/ai-studio ${FLATPAK_DEST}/bin/ai-studio
+      - install -Dm644 public/assets/icon.png ${FLATPAK_DEST}/share/icons/hicolor/512x512/apps/com.aistudio.desktop.png
+      - install -Dm644 com.aistudio.desktop.desktop ${FLATPAK_DEST}/share/applications/com.aistudio.desktop.desktop
+      - install -Dm644 com.aistudio.desktop.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.aistudio.desktop.metainfo.xml
+    sources:
+      - type: git
+        url: https://github.com/antalcides/ai-studio.git
+        tag: v1.2.0
+        commit: ''
+    build-options:
+      env:
+        npm_config_nodedir: /usr/lib/sdk/nodejs18
