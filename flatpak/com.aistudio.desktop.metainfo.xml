@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.aistudio.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>AI Studio</name>
+  <summary>Chat with local and cloud AI models</summary>
+  <description>
+    <p>AI Studio es una aplicación de escritorio moderna para chatear con modelos de IA locales y en la nube. Conecta fácilmente con:</p>
+    <ul>
+      <li>Ollama (modelos locales)</li>
+      <li>OpenAI (ChatGPT)</li>
+      <li>Anthropic (Claude)</li>
+      <li>Google Gemini</li>
+      <li>LM Studio</li>
+      <li>OpenRouter</li>
+      <li>Y más...</li>
+    </ul>
+    <p>Características:</p>
+    <ul>
+      <li>Interfaz moderna y oscura</li>
+      <li>Sin problemas de CORS</li>
+      <li>Soporte para múltiples modelos</li>
+      <li>Markdown en respuestas</li>
+      <li>Configuración persistente</li>
+      <li>Exportación de conversaciones</li>
+      <li>Menú nativo</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.aistudio.desktop.desktop</launchable>
+  <url type="homepage">https://github.com/antalcides/ai-studio</url>
+  <url type="bugtracker">https://github.com/antalcides/ai-studio/issues</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/antalcides/ai-studio/main/public/assets/icon.png</image>
+      <caption>AI Studio - Chat with AI Models</caption>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="1.2.0" date="2026-10-05">
+      <description>
+        <p>Release 1.2.0 - Latest features and improvements</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>
