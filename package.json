@@ -8,13 +8,13 @@
     "email": "dev@localhost"
   },
   "license": "MIT",
-  "homepage": "https://github.com/romeroalan26/ollama-gui",
+  "homepage": "https://github.com/antalcides/ai-studio",
   "repository": {
     "type": "git",
-    "url": "https://github.com/romeroalan26/ollama-gui.git"
+    "url": "https://github.com/antalcides/ai-studio.git"
   },
   "bugs": {
-    "url": "https://github.com/romeroalan26/ollama-gui/issues"
+    "url": "https://github.com/antalcides/ai-studio/issues"
   },
   "keywords": [
     "ollama",
@@ -40,6 +40,9 @@
     "build-win-dir": "electron-builder --win dir --x64",
     "build-mac": "electron-builder --mac",
     "build-linux": "electron-builder --linux",
+    "build-linux-deb": "electron-builder --linux deb --x64",
+    "build-linux-appimage": "electron-builder --linux AppImage --x64",
+    "build-linux-all": "electron-builder --linux deb AppImage --x64",
     "build-win-simple": "node tools/build-win.js",
     "package-win": "node tools/package-win.js",
     "postinstall": "electron-builder install-app-deps",
@@ -94,7 +97,8 @@
         }
       ],
       "icon": "public/assets/icon.ico",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "certificateFile": null,
+      "certificatePassword": null
     },
     "nsis": {
       "oneClick": false,
@@ -112,17 +116,26 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
       "icon": "public/assets/icon.png",
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "linux": {
       "target": [
+        "deb",
         "AppImage"
       ],
       "category": "Utility",
       "icon": "public/assets/icon.png"
+    },
+    "deb": {
+      "artifactName": "ai-studio_${version}_${arch}.${ext}"
+    },
+    "appImage": {
+      "artifactName": "ai-studio-${version}.${ext}"
     }
   }
 }
