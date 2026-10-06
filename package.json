@@ -8,13 +8,13 @@
     "email": "dev@localhost"
   },
   "license": "MIT",
-  "homepage": "https://github.com/romeroalan26/ollama-gui",
+  "homepage": "https://github.com/antalcides/ai-studio",
   "repository": {
     "type": "git",
-    "url": "https://github.com/romeroalan26/ollama-gui.git"
+    "url": "https://github.com/antalcides/ai-studio.git"
   },
   "bugs": {
-    "url": "https://github.com/romeroalan26/ollama-gui/issues"
+    "url": "https://github.com/antalcides/ai-studio/issues"
   },
   "keywords": [
     "ollama",
@@ -37,11 +37,12 @@
     "build": "electron-builder",
     "build-win": "electron-builder --win --x64",
     "build-win-portable": "electron-builder --win portable --x64",
-    "build-win-dir": "electron-builder --win dir --x64",
-    "build-mac": "electron-builder --mac",
-    "build-linux": "electron-builder --linux",
-    "build-win-simple": "node tools/build-win.js",
-    "package-win": "node tools/package-win.js",
+    "build-win-nsis": "electron-builder --win nsis --x64",
+    "build-mac": "electron-builder --mac --x64",
+    "build-linux": "electron-builder --linux --x64",
+    "build-linux-deb": "electron-builder --linux deb --x64",
+    "build-linux-appimage": "electron-builder --linux AppImage --x64",
+    "build-all": "electron-builder -mwl",
     "postinstall": "electron-builder install-app-deps",
     "test": "echo \"No tests specified\" && exit 0"
   },
@@ -58,7 +59,7 @@
     "appId": "com.aistudio.desktop",
     "productName": "AI Studio",
     "executableName": "ai-studio",
-    "copyright": "Copyright © 2026",
+    "copyright": "Copyright © 2026 AI Studio",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -85,16 +86,11 @@
           "arch": [
             "x64"
           ]
-        },
-        {
-          "target": "dir",
-          "arch": [
-            "x64"
-          ]
         }
       ],
-      "icon": "public/assets/icon.ico",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "icon": "build/icon.ico",
+      "certificateFile": null,
+      "certificatePassword": null
     },
     "nsis": {
       "oneClick": false,
@@ -103,8 +99,9 @@
       "createStartMenuShortcut": true,
       "shortcutName": "AI Studio",
       "runAfterFinish": true,
-      "installerIcon": "public/assets/icon.ico",
-      "uninstallerIcon": "public/assets/icon.ico",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "portable": {
@@ -112,17 +109,52 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
-      "icon": "public/assets/icon.png",
-      "category": "public.app-category.productivity"
+      "icon": "build/icon.icns",
+      "category": "public.app-category.productivity",
+      "artifactName": "${name}-${version}.${ext}"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150,
+          "type": "file"
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "artifactName": "${name}-${version}.${ext}"
     },
     "linux": {
       "target": [
-        "AppImage"
+        "AppImage",
+        "deb"
       ],
       "category": "Utility",
-      "icon": "public/assets/icon.png"
+      "icon": "build/icon.png",
+      "maintainer": "AI Studio <dev@localhost>"
+    },
+    "deb": {
+      "depends": [
+        "gconf2",
+        "gconf2-common",
+        "libappindicator1",
+        "libnotify4",
+        "libxtst6",
+        "libnss3",
+        "libxss1"
+      ],
+      "artifactName": "${name}-${version}.${ext}"
+    },
+    "appImage": {
+      "artifactName": "${name}-${version}.${ext}"
     }
   }
 }
