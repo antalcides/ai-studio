@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=AI Studio
+Comment=Aplicación de escritorio para chatear con modelos de IA locales y en la nube
+Exec=ai-studio
+Icon=com.aistudio.desktop
+Categories=Utility;Chat;
+Keywords=ollama;openai;anthropic;gemini;openrouter;ai;chat;local;cloud;
+StartupNotify=true
+Terminal=false
