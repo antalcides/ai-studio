@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.aistudio.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>AI Studio</name>
+  <summary>Aplicación de escritorio para chatear con modelos de IA locales y en la nube</summary>
+  <description>
+    <p>
+      AI Studio es una aplicación moderna y fácil de usar para chatear con modelos de inteligencia artificial.
+      Soporta tanto modelos locales (Ollama, LM Studio) como servicios en la nube (OpenAI, Anthropic, Gemini, OpenRouter).
+    </p>
+    <p>Características principales:</p>
+    <ul>
+      <li>Interfaz moderna y multiplataforma</li>
+      <li>Soporte para múltiples proveedores de IA</li>
+      <li>Modelos locales y en la nube</li>
+      <li>Gestión simple de conversaciones</li>
+      <li>Personalización de modelos y parámetros</li>
+    </ul>
+  </description>
+
+  <url type="homepage">https://github.com/antalcides/ai-studio</url>
+  <url type="bugtracker">https://github.com/antalcides/ai-studio/issues</url>
+  <url type="source">https://github.com/antalcides/ai-studio</url>
+
+  <launchable type="desktop-id">com.aistudio.desktop.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/antalcides/ai-studio/raw/main/build/screenshot.png</image>
+      <caption>Ventana principal de AI Studio</caption>
+    </screenshot>
+  </screenshots>
+
+  <categories>
+    <category>Utility</category>
+    <category>Chat</category>
+  </categories>
+
+  <keywords>
+    <keyword>ollama</keyword>
+    <keyword>openai</keyword>
+    <keyword>anthropic</keyword>
+    <keyword>gemini</keyword>
+    <keyword>openrouter</keyword>
+    <keyword>ai</keyword>
+    <keyword>chat</keyword>
+    <keyword>local</keyword>
+    <keyword>cloud</keyword>
+  </keywords>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="1.2.0" date="2026-10-06">
+      <description>
+        <p>Versión 1.2.0 - Lanzamiento inicial</p>
+        <ul>
+          <li>Soporte para múltiples proveedores de IA</li>
+          <li>Interfaz moderna y responsiva</li>
+          <li>Builds automáticos multiplataforma</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+  <developer_name>AI Studio</developer_name>
+</component>
