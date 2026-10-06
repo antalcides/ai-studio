@@ -1,0 +1,64 @@
+app-id: com.aistudio.desktop
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node18
+
+command: ai-studio
+
+finish-args:
+  # X11 + Wayland
+  - --socket=fallback-x11
+  - --socket=wayland
+  # Audio
+  - --socket=pulseaudio
+  # Acceso a internet
+  - --socket=network
+  # Acceso al sistema de archivos del usuario
+  - --filesystem=home
+  # DBus (opcional, para notificaciones)
+  - --talk-name=org.freedesktop.Notifications
+  # IPC
+  - --share=ipc
+  # Acceso a cámara y micrófono (si es necesario)
+  - --device=dri
+
+modules:
+  - name: node-dependencies
+    buildsystem: simple
+    build-commands:
+      - npm ci --offline
+      - npm run build
+    sources:
+      - type: dir
+        path: .
+      - type: file
+        path: flatpak-node-modules.json
+        dest-filename: package-lock.json
+
+  - name: ai-studio
+    buildsystem: simple
+    build-commands:
+      - npm ci
+      - npm run build
+      - install -D -m 755 dist/AI\ Studio-*.AppImage /app/bin/ai-studio
+      - install -D -m 644 build/icon.png /app/share/pixmaps/com.aistudio.desktop.png
+      - install -D -m 644 build/icon-128.png /app/share/icons/hicolor/128x128/apps/com.aistudio.desktop.png
+      - install -D -m 644 com.aistudio.desktop.desktop /app/share/applications/com.aistudio.desktop.desktop
+      - install -D -m 644 com.aistudio.desktop.metainfo.xml /app/share/metainfo/com.aistudio.desktop.metainfo.xml
+    sources:
+      - type: git
+        url: https://github.com/antalcides/ai-studio.git
+        tag: v1.2.0
+        commit: ''
+    post-install:
+      - chmod +x /app/bin/ai-studio
+
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /share/doc
+  - /share/info
+  - /share/man
